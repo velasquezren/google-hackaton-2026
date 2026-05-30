@@ -92,7 +92,36 @@ class IAPredictiveService:
         # 4. Invocar el Endpoint de Predicciones en línea en Vertex AI
         prediction = await self.vertex_client.predict_ignition_and_propagation(features)
 
-        # 5. Mapear y retornar respuesta estructurada
+        # 5. [DE BAJO PERFIL] Cálculo analítico de viabilidad de siembra ecológica
+        # Humedad alta representa temporada de lluvias (excelente para siembra).
+        # Temperatura templada (18°C-28°C) y NDVI moderado (0.3-0.6) representa espacio óptimo para rebrote.
+        hum_factor = humidity / 100.0
+        
+        if 18.0 <= temperature <= 28.0:
+            temp_factor = 1.0
+        elif temperature < 10.0 or temperature > 38.0:
+            temp_factor = 0.2
+        else:
+            temp_factor = 0.6
+            
+        if 0.3 <= ndvi <= 0.6:
+            ndvi_factor = 1.0
+        else:
+            ndvi_factor = 0.5
+            
+        sowing_score = round((hum_factor * 0.5) + (temp_factor * 0.3) + (ndvi_factor * 0.2), 2)
+        
+        # Generar recomendaciones sutiles según la viabilidad hídrica/térmica
+        if sowing_score >= 0.75 and humidity >= 55.0:
+            recommendation = "Temporada de lluvias activa detectada. Condiciones hídricas óptimas para siembra y reforestación forestal inmediata."
+        elif sowing_score >= 0.55:
+            recommendation = "Ventana húmeda aceptable. Recomendado para siembra de especies nativas resistentes y de rápido enraizamiento."
+        elif humidity < 35.0:
+            recommendation = "Déficit hídrico severo detectado (Temporada Seca). No se aconseja la siembra directa. Postergar hasta inicio de lluvias o asegurar riego permanente."
+        else:
+            recommendation = "Condiciones climáticas subóptimas. Se sugiere monitorear el aumento progresivo de la humedad relativa del suelo."
+
+        # 6. Mapear y retornar respuesta estructurada
         return PredictionResponseSchema(
             coordinates=[lon, lat],
             ignition_probability=prediction["ignition_probability"],
@@ -104,7 +133,9 @@ class IAPredictiveService:
             ),
             weather_data_source=weather_source,
             closest_station_name=closest_station_name,
-            closest_station_distance_meters=closest_station_dist
+            closest_station_distance_meters=closest_station_dist,
+            sowing_viability_score=sowing_score,
+            sowing_recommendation=recommendation
         )
 
     async def trigger_model_retraining(self, data: RetrainTriggerSchema) -> RetrainResponseSchema:

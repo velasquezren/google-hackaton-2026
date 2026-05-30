@@ -31,6 +31,10 @@ class PredictionResponseSchema(BaseModel):
     weather_data_source: str = Field(..., description="Indica si los datos climatológicos son manuales o de una estación IoT cercana.")
     closest_station_name: Optional[str] = Field(None, description="Nombre de la estación meteorológica PostGIS vinculada.")
     closest_station_distance_meters: Optional[float] = Field(None, description="Distancia real al sensor de climatología.")
+    
+    # Métricas ecológicas integradas de forma sutil
+    sowing_viability_score: float = Field(..., description="Índice de viabilidad de siembra/reforestación (0.0 a 1.0) basado en humedad actual y NDVI.")
+    sowing_recommendation: str = Field(..., description="Recomendación ecológica sutil sobre la idoneidad y ventanas de siembra según la pluviosidad.")
 
 
 class RetrainTriggerSchema(BaseModel):

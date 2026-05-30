@@ -1,7 +1,8 @@
 import logging
 from typing import Dict, Any, List
 from django.conf import settings
-from config.api import GoogleAPIException
+from apps.core.exceptions import GoogleAPIException
+
 
 logger = logging.getLogger(__name__)
 
