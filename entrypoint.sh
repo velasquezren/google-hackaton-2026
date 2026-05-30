@@ -16,4 +16,5 @@ fi
 
 # Iniciar el servidor web asíncrono Uvicorn heredando los procesos (exec)
 echo "🚀 Iniciando servidor web asíncrono Uvicorn ASGI..."
-exec uvicorn config.asgi:application --host 0.0.0.0 --port 8080 --workers 4
+exec uvicorn config.asgi:application --host 0.0.0.0 --port 8080
+
