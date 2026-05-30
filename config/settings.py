@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Servir archivos estáticos de producción
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -150,9 +151,31 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Configuración nativa de almacenamiento de archivos estáticos de Django 5.0 con WhiteNoise
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_ALL_ORIGINS = True  # Para fines de desarrollo local
+# ==============================================================================
+# SEGURIDAD DE ORIGEN (CORS & CSRF)
+# ==============================================================================
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Orígenes confiables para validación CSRF en Google Cloud Run
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.run.app',
+    'https://*.app.run',
+    'https://backend-hackaton-698520637534.us-central1.run.app'
+]
 
 # ==============================================================================
 # PROCESAMIENTO ASÍNCRONO (Celery & Redis)

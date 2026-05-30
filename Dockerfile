@@ -51,9 +51,13 @@ RUN pip install --no-cache /wheels/* \
 # Copiar el código fuente completo del backend
 COPY . .
 
+# Compilar y recolectar recursos estáticos (CSS/JS/Imágenes) en la compilación del contenedor
+RUN USE_SQLITE=True python manage.py collectstatic --noinput
+
 # Configurar variables de entorno nativas de GDAL/GEOS para Linux en Docker
 ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
 ENV GEOS_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/libgeos_c.so
+
 
 # Exponer el puerto por defecto de Google Cloud Run
 EXPOSE 8080
