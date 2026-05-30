@@ -1,0 +1,13 @@
+django>=5.0,<5.1
+django-ninja>=1.1.0
+psycopg2-binary>=2.9.9
+pydantic>=2.7.0
+celery>=5.3.6
+redis>=5.0.3
+google-cloud-aiplatform>=1.49.0
+google-cloud-storage>=2.16.0
+earthengine-api>=0.1.399
+pyjwt>=2.8.0
+cryptography>=42.0.5
+django-cors-headers>=4.3.1
+python-dotenv>=1.0.1
