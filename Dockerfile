@@ -60,7 +60,10 @@ EXPOSE 8080
 
 # Crear un usuario sin privilegios root por razones estrictas de seguridad (Container Hardening)
 RUN useradd -m appuser && chown -R appuser:appuser /app
+
+# Hacer ejecutable el script de entrada y asignarlo como comando final
+RUN chmod +x /app/entrypoint.sh
 USER appuser
 
-# Levantar el servidor web usando Uvicorn ASGI para exprimir el rendimiento asíncrono
-CMD ["uvicorn", "config.asgi:application", "--host", "0.0.0.0", "--port", "8080", "--workers", "4"]
+# Ejecutar el script entrypoint que gestiona migraciones y levanta Uvicorn
+CMD ["./entrypoint.sh"]
